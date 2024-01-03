@@ -1,0 +1,14 @@
+
+
+.quizOption{
+    background-color: blue;
+    color: white;
+    margin: 10px;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.quizOption:hover{
+    background-color: lightblue;
+    margin: 12px;
+}
