@@ -1,14 +1,121 @@
-
-
-.quizOption{
-    background-color: blue;
-    color: white;
-    margin: 10px;
-    border-radius: 10px;
-    padding: 5px;
+*{
+    margin: 0px;
 }
 
-.quizOption:hover{
-    background-color: lightblue;
-    margin: 12px;
+body{
+    background-color: rgb(231, 227, 219);
+}
+
+button{
+    padding: 10px;
+    font-size: 20px;
+    background-color: #2c8eda;
+    border: none;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+header{
+    width: 100vw;
+    height: 100px;
+    background-color: #2d7698;
+    border-bottom: 5px solid black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header h1{
+    color: white;
+}
+
+#stage{
+    background-color: rgb(206, 201, 188);
+    height: 50vh;
+    width: 95vw;
+    margin: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 10px;
+}
+
+#stage h2{
+    margin: 20px;
+}
+
+#interface{
+    display: flex;
+    justify-content: space-between;
+}
+
+#timerBox{
+    width: 95vw;
+    height: 100px;
+    background-color: #2c8eda;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+#timerBox{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#timer{
+    font-size: 40px;
+    color: white;
+}
+
+ul{
+    width: 840px;
+    height: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.quizOption{
+    color: black;
+    margin: 5px;
+    border-radius: 10px;
+    padding: 5px;
+    width: 400px;
+    height: 200px;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    box-shadow: 5px 5px 5px;
+}
+
+.shakeWrong{
+    animation: shake 0.5s ease-in-out;
+    transition: background-color 0.3s;
+}
+
+.shakeRight {
+    animation: shake 0.5s ease-in-out;
+    transition: background-color 0.3s;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25%,
+    75% {
+        transform: translateX(-10px);
+    }
+
+    50% {
+        transform: translateX(10px);
+    }
 }
