@@ -112,7 +112,6 @@ function loadQuestion(){
         option.addEventListener('click', () => {
             if(answer === option.innerText){
                 console.log('Correct');
-                score++;
                 correctAnswer();
             } else{
                 console.log('Wrong');
@@ -186,7 +185,7 @@ function addHighScore(){
     submitBtn.innerText = "Submit";
 
     submitBtn.addEventListener('click', () =>{
-        highScores.push([score, inputBox.value])
+        highScores.push([timeLeft, inputBox.value])
         showHighScores()
     })
 
