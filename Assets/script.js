@@ -7,6 +7,7 @@ const interface = document.getElementById('interface');
 var questionNumber = 0;
 let score = 0;
 var timeLeft = 0;
+var timer;
 
 let quizQuestions = [
     {
@@ -66,7 +67,7 @@ function startGame(){
 }
 
 function setTimer(){
-    var timer = setInterval(function(){
+    timer = setInterval(function(){
     timeLeft--;
     timerBox.innerText = "Time left:" + timeLeft
     if(timeLeft < 10){
@@ -79,6 +80,7 @@ function setTimer(){
     }
 },
 1000)
+return timer;
 }
 
 function clearStage(){
@@ -157,11 +159,11 @@ function showHighScores(){
         rowScore.innerText = highScores[i][0];
         rowInitials.innerText = highScores[i][1];
 
-        tableRow.append(rowScore,rowInitials)
+        tableRow.append(rowInitials, rowScore,)
         highScoreTable.append(tableRow);
     }
 
-    stage.append(highScoreTable);
+    stage.append(highScoreTitle, highScoreTable);
 
     const restartBtn = document.createElement('button');
     restartBtn.innerText = "Restart"
@@ -173,6 +175,9 @@ function showHighScores(){
 }
 
 function addHighScore(){
+
+    clearTimer(timer);
+
     let info = document.createElement('h3');
     let inputBox = document.createElement('input');
     let submitBtn = document.createElement('button')
@@ -223,4 +228,9 @@ function incorrectAnswer(){
         stage.classList.remove('shakeWrong');
         stage.style.backgroundColor = "";
     }, 1000);
+}
+
+function clearTimer(timer){
+    clearInterval(timer);
+    timerBox.innerText = "Your Score is: " + timeLeft;
 }
