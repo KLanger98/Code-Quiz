@@ -1,11 +1,10 @@
 
-//Organise main document elements here
 var stage = document.getElementById('stage');
 var timerBox = document.getElementById('timer');
-const interface = document.getElementById('interface');
+var interface = document.getElementById('interface');
 
 var questionNumber = 0;
-let score = 0;
+var score = 0;
 var timeLeft = 0;
 var timer;
 
@@ -53,55 +52,50 @@ let quizQuestions = [
     
 ];
 
-let highScores = [];
-
+//Function to launch game once 'Start' Button is pressed
 function startGame(){
-    setTimer();
-    clearStage();
-
     score = 0;
     questionNumber = 0;
-    timeLeft = 60;
-
+    timeLeft = 75;
+    timerBox.innerText = "Time Left: " + timeLeft;
+    setTimer();
+    clearStage();
     loadQuestion(questionNumber);
 }
 
+//Function to begin timer and react to the timer reaching 0
 function setTimer(){
     timer = setInterval(function(){
     timeLeft--;
-    timerBox.innerText = "Time left:" + timeLeft
+    timerBox.innerText = "Time left: " + timeLeft
     if(timeLeft < 10){
         timerBox.style.color = "red"
     }
     if(timeLeft <= 0){
         clearInterval(timer)
         timerBox.innerText = ""
-        gameOver();
+        clearStage();
+        addHighScore();
     }
 },
 1000)
 return timer;
 }
 
-function clearStage(){
-    while(stage.hasChildNodes()){
-        stage.removeChild(stage.firstChild);
-    }
-}
-
+//Function which loads questions in the staging area
 function loadQuestion(){
     if(questionNumber == quizQuestions.length){
         addHighScore();
         return;
     }
     let currentQuestion = document.createElement('h2');
+    let optionsList = document.createElement('ul');
 
+    let answer = quizQuestions[questionNumber].correctAnswer;
+    currentQuestion.innerText = quizQuestions[questionNumber].question;
     let colorClass = ["#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF"];
 
-    currentQuestion.innerText = quizQuestions[questionNumber].question;
-    let answer = quizQuestions[questionNumber].correctAnswer;
-
-    let optionsList = document.createElement('ul');
+    
     
     for(let i = 0; i < 4; i++){
         let option = document.createElement('li');
@@ -115,7 +109,7 @@ function loadQuestion(){
                 correctAnswer();
             } else{
                 console.log('Wrong');
-                timeLeft = timeLeft - 5;
+                timeLeft = timeLeft - 15;
                 incorrectAnswer();
             }
             clearStage();
@@ -128,14 +122,66 @@ function loadQuestion(){
 
     stage.append(currentQuestion, optionsList);
 }
+
+//Function used to ask the user for their initials and react to a submit event
+function addHighScore(){
+    clearTimer(timer);
+
+    let info = document.createElement('h3');
+    let inputBox = document.createElement('input');
+    let submitBtn = document.createElement('button')
+
+    info.innerText = "Add your initials to your score";
+    submitBtn.innerText = "Submit";
+
+    if(timeLeft < 0){
+        timeLeft = 0;
+    }
+
+    submitBtn.addEventListener('click', () =>{
+        if(inputBox.value.length == 2){
+            storeScore(inputBox.value, timeLeft)
+            showHighScores()
+        } else{
+            window.alert('Initials must be 2 characters');
+            inputBox.value = ""
+        }
+    })
+
+    
+    stage.append(info, inputBox, submitBtn)
+}
+
+//Function used to save the user score and username to the local storage
+function storeScore(userInitials, userScore){
+    let highScoresArr = JSON.parse(localStorage.getItem('highScores'));
+
+    let userValues = {
+        name: userInitials,
+        score: userScore
+    }
+
+    if(!highScoresArr){
+        highScoresArr = [userValues];
+    } else{
+        highScoresArr.push(userValues)
+    }
+
+    localStorage.setItem("highScores", JSON.stringify( highScoresArr));
+}
+
+//Function to load all high scores in a table
 function showHighScores(){
     clearStage();
 
-    highScores.sort(function(a,b){
-        return b[1] - a[1]
-    })
+    let highScoresArr = JSON.parse(localStorage.getItem('highScores'));
 
-    console.log(highScores)
+    if(highScoresArr.length > 1){
+        highScoresArr.sort(function(a,b){
+        return b.score - a.score
+    })
+    }
+
     const highScoreTitle = document.createElement('h2')
     const highScoreTable = document.createElement('table');
     const tableHeadings = document.createElement('tr');
@@ -150,71 +196,40 @@ function showHighScores(){
 
     highScoreTitle.innerText = "HighScores"
     
-    for(let i = 0; i < highScores.length; i++){
+    for(let i = 0; i < highScoresArr.length; i++){
         const tableRow = document.createElement('tr');
         const rowScore = document.createElement('td');
         const rowInitials = document.createElement('td');
 
-        rowScore.innerText = highScores[i][0];
-        rowInitials.innerText = highScores[i][1];
+        rowScore.innerText = highScoresArr[i].score;
+        rowInitials.innerText = highScoresArr[i].name;
 
-        tableRow.append(rowInitials, rowScore,)
+        tableRow.append(rowInitials, rowScore)
         highScoreTable.append(tableRow);
     }
-
-    stage.append(highScoreTitle, highScoreTable);
 
     const restartBtn = document.createElement('button');
     restartBtn.innerText = "Restart"
     restartBtn.addEventListener('click', startGame)
 
-    stage.append(restartBtn)
-
-
+    stage.append(highScoreTitle, highScoreTable, restartBtn);
 }
 
-function addHighScore(){
-
-    clearTimer(timer);
-
-    let info = document.createElement('h3');
-    let inputBox = document.createElement('input');
-    let submitBtn = document.createElement('button')
-
-    info.innerText = "Add your initials to your score";
-    submitBtn.innerText = "Submit";
-
-    submitBtn.addEventListener('click', () =>{
-        highScores.push([timeLeft, inputBox.value])
-        showHighScores()
-    })
-
-    
-    stage.append(info, inputBox, submitBtn)
-}
-
-function gameOver(){
-    clearStage();
-    addHighScore();
-}
-
-
+//Function to make the page react to the user providing a correct answer
 function correctAnswer(){
-    interface.children[0].classList.add('shakeRight');
     interface.children[0].style.backgroundColor = "green";
 
-    stage.classList.add('shakeRight');
     stage.style.backgroundColor = "#4c9d50";
 
     setTimeout(() =>{
-        interface.children[0].classList.remove('shakeRight');
         interface.children[0].style.backgroundColor = "";
-        stage.classList.remove('shakeRight');
         stage.style.backgroundColor = "";
     }, 1000);
 }
 
+//Function to make the page react negatively to a user providing a wrong number
 function incorrectAnswer(){
+    timerBox.innerText = "Time left: " + timeLeft
     interface.children[0].classList.add('shakeWrong');
     interface.children[0].style.backgroundColor = "red";
 
@@ -229,6 +244,14 @@ function incorrectAnswer(){
     }, 1000);
 }
 
+//function used to clear the staging area
+function clearStage(){
+    while(stage.hasChildNodes()){
+        stage.removeChild(stage.firstChild);
+    }
+}
+
+//function used to clear the timer
 function clearTimer(timer){
     clearInterval(timer);
     timerBox.innerText = "Your Score is: " + timeLeft;
